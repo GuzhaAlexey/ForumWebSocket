@@ -1,8 +1,8 @@
 import Team from './modules/Team.js'
 import FileLogger from './modules/FileLogger.js';
-import WebSocket from 'ws';
+import {WebSocketServer} from 'ws';
 import fs from 'fs'
-import https from 'https'
+//import https from 'https'
 
 const startTime = 10 * 60 * 60 * 1000; //стартовое время 10 часов
 //const startTime = 10 * 1000;
@@ -47,19 +47,10 @@ teams.forEach(function(team){
     fl.logInFile(`${team.number} "${team.name}" ${team.time} ${team.formatTime(team.time)} ${team.level}`);
     console.log(`${team.number} "${team.name}" ${team.time} ${team.formatTime(team.time)} ${team.level}`);
 } )
-
-
-const server = https.createServer({
-    cert: fs.readFileSync('./cert.pem'),
-    key: fs.readFileSync('./key.key')
-  }, (req, res) => {
-    console.log("Request");
-    res.end("Nice");
-  });
  
-//const wsServer = new WebSocketServer({port: 9000});
+const wsServer = new WebSocketServer({port: 9000});
  
-const wsServer = new WebSocket(server);
+//const wsServer = new WebSocket(server);
 
 let clients = {
     "admins" : {},
@@ -306,7 +297,7 @@ function onConnect(wsClient) {
     })
 }
 
-server.listen(9000);
+//wsServer.listen(9000);
 
 console.log('Сервер запущен на 9000 порту');
 fl.logInFile('Сервер запущен на 9000 порту');
