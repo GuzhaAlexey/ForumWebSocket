@@ -182,9 +182,114 @@ function onConnect(wsClient) {
                     break;
                 case 'ECHO':
                     for (var key in clients) {
-                        clients[key].send(jsonMessage.data);
+                        let group = clients[key];
+                        for(key in group){
+                            group[key].ws.send(jsonMessage.data);
+                        }
                     }
-                    //wsClient.send(jsonMessage.data);
+                    break;
+                case 'SET_NAME':
+                    teams[jsonMessage.data.teamNumber].name = jsonMessage.data.newName;
+                    let group = clients[jsonMessage.data.type];
+                    for(key in group){
+                        group[key].ws.send(`Новое имя команды "${teams[jsonMessage.data.teamNumber].name}"`);
+                    }
+                    break;
+                case 'GET_INFO':
+                    switch(jsonMessage.data.type){
+                        case 'ADMIN':
+                            wsClient.send(0);
+                            break;
+                        case 'TEAM_0':
+
+                            wsClient.send(JSON.stringify({
+                                name:teams[0].name,
+                                time:teams[0].time,
+                                credit:teams[0].credit,
+                                level:teams[0].level
+                            }));
+                            break;
+                        case 'TEAM_1':
+                            wsClient.send(JSON.stringify({
+                                name:teams[1].name,
+                                time:teams[1].time,
+                                credit:teams[1].credit,
+                                level:teams[1].level
+                            }));
+                            break;
+                        case 'TEAM_2':
+                            wsClient.send(JSON.stringify({
+                                name:teams[2].name,
+                                time:teams[2].time,
+                                credit:teams[2].credit,
+                                level:teams[2].level
+                            }));
+                            break;
+                        case 'TEAM_3':
+                            wsClient.send(JSON.stringify({
+                                name:teams[3].name,
+                                time:teams[3].time,
+                                credit:teams[3].credit,
+                                level:teams[3].level
+                            }));
+                            break;
+                        case 'TEAM_4':
+                            wsClient.send(JSON.stringify({
+                                name:teams[4].name,
+                                time:teams[4].time,
+                                credit:teams[4].credit,
+                                level:teams[4].level
+                            }));
+                            break;        
+                        case 'TEAM_5':
+                            wsClient.send(JSON.stringify({
+                                name:teams[5].name,
+                                time:teams[5].time,
+                                credit:teams[5].credit,
+                                level:teams[5].level
+                            }));
+                            break;
+                        case 'TEAM_6':
+                            wsClient.send({
+                                name:teams[6].name,
+                                time:teams[6].time,
+                                credit:teams[6].credit,
+                                level:teams[6].level
+                            });
+                            break;
+                        case 'TEAM_7':
+                            wsClient.send({
+                                name:teams[7].name,
+                                time:teams[7].time,
+                                credit:teams[7].credit,
+                                level:teams[7].level
+                            });
+                            break;
+                        case 'TEAM_8':
+                            wsClient.send(JSON.stringify({
+                                name:teams[8].name,
+                                time:teams[8].time,
+                                credit:teams[8].credit,
+                                level:teams[8].level
+                            }));
+                            break;
+                        case 'TEAM_9':
+                            wsClient.send({
+                                name:teams[9].name,
+                                time:teams[9].time,
+                                credit:teams[9].credit,
+                                level:teams[9].level
+                            });
+                            break;
+                        case 'TEAM_10':
+                            wsClient.send(JSON.stringify({
+                                name:teams[10].name,
+                                time:teams[10].time,
+                                credit:teams[10].credit,
+                                level:teams[10].level
+                            }));
+                            break;                        
+                    }
                     break;
                 case 'PING':
                     setTimeout(function(){
@@ -291,43 +396,21 @@ function onConnect(wsClient) {
         }
     });
     wsClient.on('close', function(){
-        console.log(`ОТКЛЮЧИЛСЯ пользователь ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`);
-        fl.logInFile(`ОТКЛЮЧИЛСЯ полльзователь ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`);
-        delete clients[`${typeClient}`][`${uniqueId}`];
+        try{
+            console.log(`ОТКЛЮЧИЛСЯ пользователь ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`);
+            fl.logInFile(`ОТКЛЮЧИЛСЯ полльзователь ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`);
+            delete clients[`${typeClient}`][`${uniqueId}`];
+        } catch(error) {
+            console.log(`ОШИБКА отключения пользователя ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`, error);
+            fl.logInFile(`ОШИБКА отключения пользователя ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`, error);
+        }
+
+        
     })
 }
 
-//wsServer.listen(9000);
-
 console.log('Сервер запущен на 9000 порту');
 fl.logInFile('Сервер запущен на 9000 порту');
-
-
-/*teams[0].timer.startTimer()
-let testTimer = setInterval(()=> console.log(`0 ${teams[0].timer.time}`), 1000);
-
-
-setTimeout(() => { 
-    clearInterval(testTimer); 
-    teams[0].timer.stopTimer();
-    console.log('Стоп тест'); 
-}, 10000);
-
-
-teams[0].credit.openCredit(3000);
-console.log(`0 ${teams[0].credit.credit}`);
-teams[0].credit.minusCredit(3000);
-if (teams[0].credit) {
-    console.log('+')
-    console.log(teams[0].credit)
-} else {
-    console.log('-')
-}*/
-
-
-//console.log(teams[0].timer.team)
-//teams[0].timer.startTimer();
-//teams[0].timer.minusTime(5000);
 
 function startAll(teams) {
     console.log('Все таймеры запущены!');
@@ -346,7 +429,7 @@ function stopAll(teams) {
 }
 
 function logAll(teams){
-    var logText = `\n|Номер|Название  |Время          |Время(формат)  |Зона|Таймер зоны|Кредит    |\n`;
+    var logText = `\n|Номер|Название  |Время          |Время(формат)  |Зона|Таймер зоны|Кредит    |Кредит(формат) |\n`;
     teams.forEach(function(team){
         logText += `|${team.number.toString().padEnd(5)}|`+
                       `${team.name.padEnd(10)}|`+
@@ -354,7 +437,8 @@ function logAll(teams){
                       `${team.formatTime(team.time).padEnd(15)}|`+
                       `${team.level.toString().padEnd(4)}|`+
                       `${team.formatTime(team.timeLevelCooldown).toString().padEnd(11)}|`+
-                      `${team.credit.toString().padEnd(10)}|\n`;
+                      `${team.credit.toString().padEnd(10)}|`+
+                      `${team.formatTime(team.timeLevelCooldown).toString().padEnd(15)}|\n`;
     });
     console.log(logText);
     fl.logInFile(logText);
@@ -375,45 +459,6 @@ function minusAll(teams, value) {
         team.minusTime(value);
     })
 }
-
-
-/*startAll(teams);
-logAll(teams);
-let timerId = setInterval(()=>logAll(teams), 1000)*/
-
-/*
-setTimeout(() => {
-    teams[0].levelUp()
-}, 2000)
-
-setTimeout(() => {
-    teams[0].minusTime(5 * 1000)
-}, 4000);
-
-setTimeout(() => {
-    teams[0].levelUp()
-}, 6000)
-
-/*setTimeout(() => {
-    teams[0].addTime(2 * 1000)
-}, 6000);*/
-
-/*setTimeout(() => {
-    addAll(teams, 10*1000);
-}, 2000);*/
-
-/*
-setTimeout(() => {
-    minusAll(teams,10*1000);
-}, 4000);
-
-
-setTimeout(() => {
-    clearInterval(timerId)
-    stopAll(teams);
-    logAll(teams);
-}, 10 * 1000)*/
-
 
 let gloabalTimerCounting = false;
 let globalTimerId;

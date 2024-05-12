@@ -224,7 +224,7 @@ export default class Team {
         if (!this.isLevelCooldown) {
             if (!this.isOpen) {
                 if (this.level > 2) {
-                    let doubleLevelUpPrice = this.levelUpPrice * 1.5;
+                    let doubleLevelUpPrice = this.levelUpPrice * 2;
                     if (this.time >= doubleLevelUpPrice) {
                         this.level --;
                         this.level --;
