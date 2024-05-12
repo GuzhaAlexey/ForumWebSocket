@@ -50,8 +50,6 @@ teams.forEach(function(team){
  
 const wsServer = new WebSocketServer({port: 9000});
  
-//const wsServer = new WebSocket(server);
-
 let clients = {
     "admins" : {},
     "team_0" : {},
@@ -70,9 +68,6 @@ let clients = {
 wsServer.on('connection', onConnect);
 
 function onConnect(wsClient) {
-
-    //var idClient = ++clientsIdCounter;
-    //clients[idClient] = wsClient; 
 
     var uniqueId = Date.now();
     var arrIndx;
@@ -196,99 +191,55 @@ function onConnect(wsClient) {
                     }
                     break;
                 case 'GET_INFO':
+                    function teamData(teamNumber) {
+                        return JSON.stringify({
+                            name:teams[teamNumber].name,
+                            time:teams[teamNumber].time,
+                            credit:teams[teamNumber].credit,
+                            level:teams[teamNumber].level
+                        })
+                    }
+                    
                     switch(jsonMessage.data.type){
                         case 'ADMIN':
                             wsClient.send(0);
                             break;
                         case 'TEAM_0':
-
-                            wsClient.send(JSON.stringify({
-                                name:teams[0].name,
-                                time:teams[0].time,
-                                credit:teams[0].credit,
-                                level:teams[0].level
-                            }));
+                            wsClient.send(teamData(0));
                             break;
                         case 'TEAM_1':
-                            wsClient.send(JSON.stringify({
-                                name:teams[1].name,
-                                time:teams[1].time,
-                                credit:teams[1].credit,
-                                level:teams[1].level
-                            }));
+                            wsClient.send(teamData(1));
                             break;
                         case 'TEAM_2':
-                            wsClient.send(JSON.stringify({
-                                name:teams[2].name,
-                                time:teams[2].time,
-                                credit:teams[2].credit,
-                                level:teams[2].level
-                            }));
+                            wsClient.send(teamData(2));
                             break;
                         case 'TEAM_3':
-                            wsClient.send(JSON.stringify({
-                                name:teams[3].name,
-                                time:teams[3].time,
-                                credit:teams[3].credit,
-                                level:teams[3].level
-                            }));
+                            wsClient.send(teamData(3));
                             break;
                         case 'TEAM_4':
-                            wsClient.send(JSON.stringify({
-                                name:teams[4].name,
-                                time:teams[4].time,
-                                credit:teams[4].credit,
-                                level:teams[4].level
-                            }));
+                            wsClient.send(teamData(4));
                             break;        
                         case 'TEAM_5':
-                            wsClient.send(JSON.stringify({
-                                name:teams[5].name,
-                                time:teams[5].time,
-                                credit:teams[5].credit,
-                                level:teams[5].level
-                            }));
+                            wsClient.send(teamData(5));
                             break;
                         case 'TEAM_6':
-                            wsClient.send({
-                                name:teams[6].name,
-                                time:teams[6].time,
-                                credit:teams[6].credit,
-                                level:teams[6].level
-                            });
+                            wsClient.send(teamData(6));
                             break;
                         case 'TEAM_7':
-                            wsClient.send({
-                                name:teams[7].name,
-                                time:teams[7].time,
-                                credit:teams[7].credit,
-                                level:teams[7].level
-                            });
+                            wsClient.send(teamData(7));
                             break;
                         case 'TEAM_8':
-                            wsClient.send(JSON.stringify({
-                                name:teams[8].name,
-                                time:teams[8].time,
-                                credit:teams[8].credit,
-                                level:teams[8].level
-                            }));
+                            wsClient.send(teamData(8));
                             break;
                         case 'TEAM_9':
-                            wsClient.send({
-                                name:teams[9].name,
-                                time:teams[9].time,
-                                credit:teams[9].credit,
-                                level:teams[9].level
-                            });
+                            wsClient.send(teamData(9));
                             break;
                         case 'TEAM_10':
-                            wsClient.send(JSON.stringify({
-                                name:teams[10].name,
-                                time:teams[10].time,
-                                credit:teams[10].credit,
-                                level:teams[10].level
-                            }));
-                            break;                        
+                            wsClient.send(teamData(10));
+                            break;  
+                        default:
+                            wsClient.send(`Неверный параметр "${jsonMessage.data.type}"`);
+                            break;                         
                     }
                     break;
                 case 'PING':
