@@ -192,12 +192,19 @@ function onConnect(wsClient) {
                     break;
                 case 'GET_INFO':
                     function teamData(teamNumber) {
-                        return JSON.stringify({
-                            name:teams[teamNumber].name,
-                            time:teams[teamNumber].time,
-                            credit:teams[teamNumber].credit,
-                            level:teams[teamNumber].level
-                        })
+
+                        let json = {
+                            action : "GET_INFO",
+                            data: {
+                                number:teamNumber,
+                                name:teams[teamNumber].name,
+                                time:teams[teamNumber].time,
+                                credit:teams[teamNumber].credit,
+                                level:teams[teamNumber].level,
+                                levelTimer:teams[teamNumber].timeLevelCooldown
+                            }
+                        }
+                        return JSON.stringify(json);
                     }
                     
                     switch(jsonMessage.data.type){
@@ -389,7 +396,7 @@ function logAll(teams){
                       `${team.level.toString().padEnd(4)}|`+
                       `${team.formatTime(team.timeLevelCooldown).toString().padEnd(11)}|`+
                       `${team.credit.toString().padEnd(10)}|`+
-                      `${team.formatTime(team.timeLevelCooldown).toString().padEnd(15)}|\n`;
+                      `${team.formatTime(team.credit).toString().padEnd(15)}|\n`;
     });
     console.log(logText);
     fl.logInFile(logText);
