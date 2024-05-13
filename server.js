@@ -76,7 +76,12 @@ function onConnect(wsClient) {
     console.log(`Новый пользователь`);
     fl.logInFile(`Новый пользователь`);
     // отправка привественного сообщения клиенту
-    wsClient.send('Соединение установлено');
+    wsClient.send(JSON.stringify({
+        action: "CONNECTED",
+        data: {
+            message: "Соединение установлено'"
+        }
+    }));
 
     wsClient.on('message', function(message){
         try {
