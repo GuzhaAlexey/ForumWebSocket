@@ -178,21 +178,42 @@ function onConnect(wsClient) {
                         }
                         console.log(logText);
                         fl.logInFile(logText);
-                        wsClient.send(logText);
+                        let showJson = {
+                            action: "SHOW_ALL_CLIENTS",
+                            data: {
+                                logText: logText
+                            }
+                        }
+                        wsClient.send(JSON.stringify(showJson));
                     break;
                 case 'ECHO':
+                    let echoJson = {
+                        action: "ECHO",
+                        data: {
+                            message: jsonMessage.data,
+                        }
+                    }
+                    let message = JSON.stringify(echoJson)
                     for (var key in clients) {
                         let group = clients[key];
                         for(key in group){
-                            group[key].ws.send(jsonMessage.data);
+
+                            group[key].ws.send(message);
                         }
                     }
                     break;
-                case 'SET_NAME':
+                case 'SET_NAME':                   
                     teams[jsonMessage.data.teamNumber].name = jsonMessage.data.newName;
                     let group = clients[jsonMessage.data.type];
+                    let nameJson = {
+                        action: "SET_NAME",
+                        data: {
+                            name: jsonMessage.data.newName,
+                            message: `Новое имя команды "${teams[jsonMessage.data.teamNumber].name}"`
+                        }
+                    }
                     for(key in group){
-                        group[key].ws.send(`Новое имя команды "${teams[jsonMessage.data.teamNumber].name}"`);
+                        group[key].ws.send(JSON.stringify(nameJson));
                     }
                     break;
                 case 'GET_INFO':
@@ -261,18 +282,45 @@ function onConnect(wsClient) {
                     break;
                 case 'ADD_TIME':
                         teams[jsonMessage.teamNumber].addTime(jsonMessage.value);
-                        wsClient.send(teams[jsonMessage.teamNumber].time)
+
+                        let addTimeJson = {
+                            action: "ADD_TIME",
+                            data: {
+                                value: jsonMessage.value,
+                                time: teams[jsonMessage.teamNumber].time,
+                                message: `Вам начислено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}`,
+                            }
+                        }
+
+                        wsClient.send(JSON.stringify(addTimeJson))
                     break;
                 case 'MINUS_TIME':
                         teams[jsonMessage.teamNumber].minusTime(jsonMessage.value);
-                        wsClient.send(teams[jsonMessage.teamNumber].time)
+
+                        let minusTimeJson = {
+                            action: "MINUS_TIME",
+                            data: {
+                                value: jsonMessage.value,
+                                time: teams[jsonMessage.teamNumber].time,
+                                message: `У вас вычтено время ${teams[jsonMessage.teamNumber].formatTime(tjsonMessage.value)}`,
+                            }
+                        }
+
+                        wsClient.send(JSON.stringify(minusTimeJson))
                     break;
                 case 'LEVEL_UP':
                         var result = teams[jsonMessage.teamNumber].levelUp();
                         
                         if(result.isLevelUp){
                             for(key in clients[`${typeClient}`]){
-                                clients[`${typeClient}`][key].ws.send(result.message)
+                                clients[`${typeClient}`][key].ws.send(JSON.stringify({
+                                    action: "TRUE_LEVEL_UP",
+                                    data: {
+                                        message: result.message,
+                                        level: teams[jsonMessage.teamNumber].level,
+                                        levelTimer: teams[jsonMessage.teamNumber].timeLevelCooldown,
+                                    }
+                                }))
                             }
                             
                             //отправка все сообщения о повышении уровня
@@ -280,13 +328,23 @@ function onConnect(wsClient) {
                                 if (key != typeClient) {
                                     let group = clients[key];
                                     for(key in group){
-                                        group[key].ws.send('Одна из команд пересекла временную зону!');
+                                        group[key].ws.send(JSON.stringify({
+                                            action: "OTHER_LEVEL_UP",
+                                            data:{
+                                                message: "Одна из команд пересекла временную зону!"
+                                            }
+                                        }));
                                     }
                                 }
                             }
                         } else {
                             for(key in clients[`${typeClient}`]){
-                                clients[`${typeClient}`][key].ws.send(result.message)
+                                clients[`${typeClient}`][key].ws.send(JSON.stringify({
+                                    action: "FALSE_LEVEL_UP",
+                                    data: {
+                                        message: result.message
+                                    }
+                                }));
                             }
                         }
                         
@@ -297,7 +355,14 @@ function onConnect(wsClient) {
                         
                         if(result.isLevelUp){
                             for(key in clients[`${typeClient}`]){
-                                clients[`${typeClient}`][key].ws.send(result.message)
+                                clients[`${typeClient}`][key].ws.send(JSON.stringify({
+                                    action: "TRUE_DOUBLE_LEVEL_UP",
+                                    data: {
+                                        message: result.message,
+                                        level: teams[jsonMessage.teamNumber].level,
+                                        levelTimer: teams[jsonMessage.teamNumber].timeLevelCooldown,
+                                    }
+                                }))
                             }
                             
                             //отправка все сообщения о повышении уровня
@@ -305,17 +370,25 @@ function onConnect(wsClient) {
                                 if (key != typeClient) {
                                     let group = clients[key];
                                     for(key in group){
-                                        group[key].ws.send('Одна из команд пересекла временную зону!');
+                                        group[key].ws.send(JSON.stringify({
+                                            action: "OTHER_DOUBLE_LEVEL_UP",
+                                            data:{
+                                                message: "Одна из команд пересекла временную зону!"
+                                            }
+                                        }));
                                     }
                                 }
                             }
                         } else {
                             for(key in clients[`${typeClient}`]){
-                                clients[`${typeClient}`][key].ws.send(result.message)
+                                clients[`${typeClient}`][key].ws.send(JSON.stringify({
+                                    action: "FALSE_DOUBLE_LEVEL_UP",
+                                    data: {
+                                        message: result.message
+                                    }
+                                }))
                             }
-                        }
-                        
-                        //wsClient.send(teams[jsonMessage.teamNumber].level)
+                        }                        
                     break;    
                 case 'LEVEL_DOWN':
                         teams[jsonMessage.teamNumber].levelDown();
@@ -327,12 +400,22 @@ function onConnect(wsClient) {
                             for (var key in clients) {
                                 let group = clients[key];
                                 for(key in group){
-                                    group[key].ws.send('Ваше время пошло!');
+                                    group[key].ws.send(JSON.stringify({
+                                        action: "START",
+                                        data: {
+                                            message: "Ваше время пошло!"
+                                        }
+                                    }));
                                 }
                             }
                             //wsClient.send('Время стартануло!');
                         } else {
-                            wsClient.send('Время уже запущено!');
+                            wsClient.send(JSON.stringify({
+                                action: "FALSE_START",
+                                data: {
+                                    message: "Время уже запущено!"
+                                }
+                            }));
                         }
                     break;
                 case 'STOP':
@@ -341,12 +424,22 @@ function onConnect(wsClient) {
                             for (var key in clients) {
                                 let group = clients[key];
                                 for(key in group){
-                                    group[key].ws.send('Ваше остановлено!');
+                                    group[key].ws.send(JSON.stringify({
+                                        action: "STOP",
+                                        data: {
+                                            message: "Время остановлено!"
+                                        }
+                                    }));
                                 }
                             }
                             //wsClient.send('Время остановлено!');
                         } else {
-                            wsClient.send('Время уже остановлено!')
+                            wsClient.send(JSON.stringify({
+                                action: "FALSE_STOP",
+                                data: {
+                                    message: "Время уже останволено!"
+                                }
+                            }))
                         }
                     break;
 
