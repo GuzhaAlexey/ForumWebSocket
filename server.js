@@ -50,7 +50,8 @@ teams.forEach(function(team){
 const wsServer = new WebSocketServer({port: 9000});
  
 let clients = {
-    "admins" : {},
+    "lobby"  : {},
+    "admin" : {},
     "team_0" : {},
     "team_1" : {},
     "team_2" : {},
@@ -69,11 +70,9 @@ wsServer.on('connection', onConnect);
 function onConnect(wsClient) {
 
     var uniqueId = Date.now();
-    var arrIndx;
-    var typeClient;
+    var typeClient = "lobby";
 
-    console.log(`Новый пользователь`);
-    fl.logInFile(`Новый пользователь`);
+    fl.logInFile(`Новый пользователь UID[${uniqueId}]`);
     // отправка привественного сообщения клиенту
     wsClient.send(JSON.stringify({
         action: "CONNECTED",
@@ -82,6 +81,8 @@ function onConnect(wsClient) {
         }
     }));
 
+    clients.lobby[`${uniqueId}`] = {ws: wsClient, name: "Неизвестный"}
+
     wsClient.on('message', function(message){
         try {
             // сообщение пришло текстом, нужно конвертировать в JSON-формат
@@ -89,69 +90,18 @@ function onConnect(wsClient) {
             fl.logInFile(`ЗАПРОС К СЕРВЕРУ ${JSON.stringify(jsonMessage)}`);
             switch (jsonMessage.action){
                 case 'I_AM':
-                        switch(jsonMessage.data.type){
-                            case 'ADMIN':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ админ ${jsonMessage.data.name}`);
-                                typeClient = "admins";
-                                clients.admins[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                
-                                break;
-                            case 'TEAM_0':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 0`);
-                                typeClient = "team_0";
-                                clients.team_0[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_1':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 1`);
-                                typeClient = "team_1";
-                                clients.team_1[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_2':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 2`);
-                                typeClient = "team_2";
-                                clients.team_2[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_3':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 3`);
-                                typeClient = "team_3";
-                                clients.team_3[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_4':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 4`);
-                                typeClient = "team_4";
-                                clients.team_4[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;        
-                            case 'TEAM_5':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 5`);
-                                typeClient = "team_5";
-                                clients.team_5[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_6':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 6`);
-                                typeClient = "team_6";
-                                clients.team_6[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_7':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 7`);
-                                typeClient = "team_7";
-                                clients.team_7[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_8':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 8`);
-                                typeClient = "team_8";
-                                clients.team_8[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_9':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 9`);
-                                typeClient = "team_9";
-                                clients.team_9[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;
-                            case 'TEAM_10':
-                                fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 10`);
-                                typeClient = "team_10";
-                                clients.team_10[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
-                                break;                        
+                        function setInClinets(type, UID, wsClient, name) {
+                            delete clients["lobby"][UID]
+                            fl.logInFile(`ПОДКЛЮЧИЛСЯ ${type == "ADMIN" ? "админ" : "игрок"} ${jsonMessage.data.name}`);
+                            typeClient = type;
+                            console.log("typeClient -> " + typeClient);
+                            for(key in clients[type]){
+                                console.log(key)
+                                console.log(clients[type][key])
+                            }
+                            clients[type][UID] = {ws: wsClient, name: name};
                         }
+                        setInClinets(jsonMessage.data.type.toLowerCase(), uniqueId, wsClient, jsonMessage.data.name)
                     break;
                 case 'SHOW_ALL_CLIENTS':
                         let logText = '\n ВСЕ ПОДКЛЮЧЕНИЯ \n';
@@ -189,7 +139,6 @@ function onConnect(wsClient) {
                 case 'SET_NAME':                   
                     teams[jsonMessage.teamNumber].name = jsonMessage.newName;
                     for(key in clients[`team_${jsonMessage.teamNumber}`]){
-                        console.log(key)
                         clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                             action: "SET_NAME",
                             data: {
@@ -438,13 +387,11 @@ function onConnect(wsClient) {
     });
     wsClient.on('close', function(){
         try{
-            fl.logInFile(`ОТКЛЮЧИЛСЯ полльзователь ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`);
-            delete clients[`${typeClient}`][`${uniqueId}`];
+            fl.logInFile(`ОТКЛЮЧИЛСЯ полльзователь ${typeClient} UID[${uniqueId}] ${clients[typeClient][uniqueId].name}`);
+            delete clients[typeClient][uniqueId];
         } catch(error) {
-            fl.logInFile(`ОШИБКА отключения пользователя ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`, error);
+            fl.logInFile(`ОШИБКА отключения пользователя ${typeClient} UID[${uniqueId}] ${clients[typeClient][uniqueId].name}`, error);
         }
-
-        
     })
 }
 
