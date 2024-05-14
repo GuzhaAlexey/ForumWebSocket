@@ -452,14 +452,14 @@ function onConnect(wsClient) {
 fl.logInFile('Сервер запущен на 9000 порту');
 
 function startAll(teams) {
-    fl.logInFile('Все таймеры запущены!');
+    fl.logInFile('Запуск всех таймеров!');
     teams.forEach(function (team){
         team.startTimer();
     })
 }
 
 function stopAll(teams) {
-    fl.logInFile('Все таймеры остановлены!');
+    fl.logInFile('Остановка всех таймеров!');
     teams.forEach(function(team){
         team.stopTimer()
     })
@@ -504,7 +504,6 @@ function play() {
 }
 
 function start() {
-    console.log('ГЛОБАЛЬНЫЙ СТАРТ!')
     fl.logInFile('ГЛОБАЛЬНЫЙ СТАРТ!');
     gloabalTimerCounting = true;
     startAll(teams);
@@ -513,7 +512,6 @@ function start() {
 }
 
 function stop() {
-    console.log('ГЛОБАЛЬНЫЙ СТОП!')
     fl.logInFile('ГЛОБАЛЬНЫЙ СТОП!');
     gloabalTimerCounting = false;
     stopAll(teams);
