@@ -190,16 +190,14 @@ function onConnect(wsClient) {
                     break;
                 case 'SET_NAME':                   
                     teams[jsonMessage.data.teamNumber].name = jsonMessage.data.newName;
-                    let group = clients[`team_${jsonMessage.data.teamNumber}`];
-                    let nameJson = {
-                        action: "SET_NAME",
-                        data: {
-                            name: jsonMessage.data.newName,
-                            message: `Новое имя команды "${teams[jsonMessage.data.teamNumber].name}"`
-                        }
-                    }
-                    for(key in group){
-                        group[key].ws.send(JSON.stringify(nameJson));
+                    for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                        clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
+                            action: "SET_NAME",
+                            data: {
+                                name: jsonMessage.data.newName,
+                                message: `Новое имя команды "${teams[jsonMessage.data.teamNumber].name}"`
+                            }
+                        }))
                     }
                     break;
                 case 'GET_INFO':
