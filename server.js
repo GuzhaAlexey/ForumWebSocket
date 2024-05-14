@@ -162,7 +162,6 @@ function onConnect(wsClient) {
                                 logText += `|---[${key}] ${group[key].name}\n`
                             };
                         }
-                        console.log(logText);
                         fl.logInFile(logText);
                         let showJson = {
                             action: "SHOW_ALL_CLIENTS",
@@ -183,19 +182,19 @@ function onConnect(wsClient) {
                     for (var key in clients) {
                         let group = clients[key];
                         for(key in group){
-
                             group[key].ws.send(message);
                         }
                     }
                     break;
                 case 'SET_NAME':                   
-                    teams[jsonMessage.data.teamNumber].name = jsonMessage.data.newName;
+                    teams[jsonMessage.teamNumber].name = jsonMessage.newName;
                     for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                        console.log(key)
                         clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                             action: "SET_NAME",
                             data: {
-                                name: jsonMessage.data.newName,
-                                message: `Новое имя команды "${teams[jsonMessage.data.teamNumber].name}"`
+                                name: jsonMessage.newName,
+                                message: `Новое имя команды "${teams[jsonMessage.teamNumber].name}"`
                             }
                         }))
                     }
