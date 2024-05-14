@@ -275,6 +275,7 @@ function onConnect(wsClient) {
                                 data: {
                                     value: jsonMessage.value,
                                     time: teams[jsonMessage.teamNumber].time,
+                                    credit: teams[jsonMessage.teamNumber].credit,
                                     message: `Вам начислено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}`,
                                 }
                             }))
@@ -289,6 +290,7 @@ function onConnect(wsClient) {
                                 data: {
                                     value: jsonMessage.value,
                                     time: teams[jsonMessage.teamNumber].time,
+                                    credit: teams[jsonMessage.teamNumber].credit,
                                     message: `У вас вычтено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}`,
                                 }
                             }))
