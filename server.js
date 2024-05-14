@@ -37,7 +37,6 @@ const log_file_path = `./logs/log_${formatDate(new Date())}.txt`;
 const fl = new FileLogger(log_file_path);
 const logTime = 1 * 60 * 1000; //время глоабльного логирования
 
-console.log('ФОРМИРОВАНИЕ КОМАНД');
 fl.logInFile('ФОРМИРОВАНИЕ КОМАНД');
 for(let i=0; i<=10;i++){    
     teams[i] = new Team(i,`Команда ${i}`, startTime, startLevel, fl)
@@ -45,7 +44,6 @@ for(let i=0; i<=10;i++){
 
 teams.forEach(function(team){
     fl.logInFile(`${team.number} "${team.name}" ${team.time} ${team.formatTime(team.time)} ${team.level}`);
-    console.log(`${team.number} "${team.name}" ${team.time} ${team.formatTime(team.time)} ${team.level}`);
 } )
  
 const wsServer = new WebSocketServer({port: 9000});
@@ -79,7 +77,7 @@ function onConnect(wsClient) {
     wsClient.send(JSON.stringify({
         action: "CONNECTED",
         data: {
-            message: "Соединение установлено'"
+            message: "Соединение установлено"
         }
     }));
 
@@ -87,80 +85,67 @@ function onConnect(wsClient) {
         try {
             // сообщение пришло текстом, нужно конвертировать в JSON-формат
             const jsonMessage = JSON.parse(message);
-            console.log(`ЗАПРОС К СЕРВЕРУ  ${JSON.stringify(jsonMessage)}`);
             fl.logInFile(`ЗАПРОС К СЕРВЕРУ ${JSON.stringify(jsonMessage)}`);
             switch (jsonMessage.action){
                 case 'I_AM':
                         switch(jsonMessage.data.type){
                             case 'ADMIN':
-                                console.log(`ПОДКЛЮЧИЛСЯ админ ${jsonMessage.data.name}`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ админ ${jsonMessage.data.name}`);
                                 typeClient = "admins";
                                 clients.admins[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 
                                 break;
                             case 'TEAM_0':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 0`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 0`);
                                 typeClient = "team_0";
                                 clients.team_0[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_1':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 1`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 1`);
                                 typeClient = "team_1";
                                 clients.team_1[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_2':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 2`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 2`);
                                 typeClient = "team_2";
                                 clients.team_2[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_3':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 3`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 3`);
                                 typeClient = "team_3";
                                 clients.team_3[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_4':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 4`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 4`);
                                 typeClient = "team_4";
                                 clients.team_4[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;        
                             case 'TEAM_5':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 5`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 5`);
                                 typeClient = "team_5";
                                 clients.team_5[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_6':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 6`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 6`);
                                 typeClient = "team_6";
                                 clients.team_6[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_7':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 7`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 7`);
                                 typeClient = "team_7";
                                 clients.team_7[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_8':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 8`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 8`);
                                 typeClient = "team_8";
                                 clients.team_8[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_9':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 9`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 9`);
                                 typeClient = "team_9";
                                 clients.team_9[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
                                 break;
                             case 'TEAM_10':
-                                console.log(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 10`);
                                 fl.logInFile(`ПОДКЛЮЧИЛСЯ игрок ${jsonMessage.data.name} команды 10`);
                                 typeClient = "team_10";
                                 clients.team_10[`${uniqueId}`] = {ws: wsClient, name: jsonMessage.data.name};
@@ -283,37 +268,37 @@ function onConnect(wsClient) {
                 case 'ADD_TIME':
                         teams[jsonMessage.teamNumber].addTime(jsonMessage.value);
 
-                        let addTimeJson = {
-                            action: "ADD_TIME",
-                            data: {
-                                value: jsonMessage.value,
-                                time: teams[jsonMessage.teamNumber].time,
-                                message: `Вам начислено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}`,
-                            }
+                        for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                            clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
+                                action: "ADD_TIME",
+                                data: {
+                                    value: jsonMessage.value,
+                                    time: teams[jsonMessage.teamNumber].time,
+                                    message: `Вам начислено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}`,
+                                }
+                            }))
                         }
-
-                        wsClient.send(JSON.stringify(addTimeJson))
                     break;
                 case 'MINUS_TIME':
                         teams[jsonMessage.teamNumber].minusTime(jsonMessage.value);
 
-                        let minusTimeJson = {
-                            action: "MINUS_TIME",
-                            data: {
-                                value: jsonMessage.value,
-                                time: teams[jsonMessage.teamNumber].time,
-                                message: `У вас вычтено время ${teams[jsonMessage.teamNumber].formatTime(tjsonMessage.value)}`,
-                            }
+                        for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                            clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
+                                action: "MINUS_TIME",
+                                data: {
+                                    value: jsonMessage.value,
+                                    time: teams[jsonMessage.teamNumber].time,
+                                    message: `У вас вычтено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}`,
+                                }
+                            }))
                         }
-
-                        wsClient.send(JSON.stringify(minusTimeJson))
                     break;
                 case 'LEVEL_UP':
                         var result = teams[jsonMessage.teamNumber].levelUp();
                         
                         if(result.isLevelUp){
-                            for(key in clients[`${typeClient}`]){
-                                clients[`${typeClient}`][key].ws.send(JSON.stringify({
+                            for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                                clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                                     action: "TRUE_LEVEL_UP",
                                     data: {
                                         message: result.message,
@@ -325,7 +310,7 @@ function onConnect(wsClient) {
                             
                             //отправка все сообщения о повышении уровня
                             for (var key in clients) {
-                                if (key != typeClient) {
+                                if (key != `team_${jsonMessage.teamNumber}`) {
                                     let group = clients[key];
                                     for(key in group){
                                         group[key].ws.send(JSON.stringify({
@@ -338,7 +323,7 @@ function onConnect(wsClient) {
                                 }
                             }
                         } else {
-                            for(key in clients[`${typeClient}`]){
+                            for(key in clients[`team_${jsonMessage.teamNumber}`]){
                                 clients[`${typeClient}`][key].ws.send(JSON.stringify({
                                     action: "FALSE_LEVEL_UP",
                                     data: {
@@ -354,8 +339,8 @@ function onConnect(wsClient) {
                         var result = teams[jsonMessage.teamNumber].doubleLevelUp();
                         
                         if(result.isLevelUp){
-                            for(key in clients[`${typeClient}`]){
-                                clients[`${typeClient}`][key].ws.send(JSON.stringify({
+                            for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                                clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                                     action: "TRUE_DOUBLE_LEVEL_UP",
                                     data: {
                                         message: result.message,
@@ -367,7 +352,7 @@ function onConnect(wsClient) {
                             
                             //отправка все сообщения о повышении уровня
                             for (var key in clients) {
-                                if (key != typeClient) {
+                                if (key != `team_${jsonMessage.teamNumber}`) {
                                     let group = clients[key];
                                     for(key in group){
                                         group[key].ws.send(JSON.stringify({
@@ -380,8 +365,8 @@ function onConnect(wsClient) {
                                 }
                             }
                         } else {
-                            for(key in clients[`${typeClient}`]){
-                                clients[`${typeClient}`][key].ws.send(JSON.stringify({
+                            for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                                clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                                     action: "FALSE_DOUBLE_LEVEL_UP",
                                     data: {
                                         message: result.message
@@ -437,7 +422,7 @@ function onConnect(wsClient) {
                             wsClient.send(JSON.stringify({
                                 action: "FALSE_STOP",
                                 data: {
-                                    message: "Время уже останволено!"
+                                    message: "Время уже остановлено!"
                                 }
                             }))
                         }
@@ -453,11 +438,9 @@ function onConnect(wsClient) {
     });
     wsClient.on('close', function(){
         try{
-            console.log(`ОТКЛЮЧИЛСЯ пользователь ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`);
             fl.logInFile(`ОТКЛЮЧИЛСЯ полльзователь ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`);
             delete clients[`${typeClient}`][`${uniqueId}`];
         } catch(error) {
-            console.log(`ОШИБКА отключения пользователя ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`, error);
             fl.logInFile(`ОШИБКА отключения пользователя ${typeClient} [${clients[`${typeClient}`][`${uniqueId}`].name}]`, error);
         }
 
@@ -465,11 +448,9 @@ function onConnect(wsClient) {
     })
 }
 
-console.log('Сервер запущен на 9000 порту');
 fl.logInFile('Сервер запущен на 9000 порту');
 
 function startAll(teams) {
-    console.log('Все таймеры запущены!');
     fl.logInFile('Все таймеры запущены!');
     teams.forEach(function (team){
         team.startTimer();
@@ -477,7 +458,6 @@ function startAll(teams) {
 }
 
 function stopAll(teams) {
-    console.log('Все таймеры остановлены!');
     fl.logInFile('Все таймеры остановлены!');
     teams.forEach(function(team){
         team.stopTimer()
@@ -496,7 +476,6 @@ function logAll(teams){
                       `${team.credit.toString().padEnd(10)}|`+
                       `${team.formatTime(team.credit).toString().padEnd(15)}|\n`;
     });
-    console.log(logText);
     fl.logInFile(logText);
 }
 

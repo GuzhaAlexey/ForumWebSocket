@@ -27,30 +27,25 @@ export default class Team {
 
     startTimer(){
         if(!this.isCounting){
-            console.log(`Запуск таймера команды ${this.number} ${this.name}`);
             this.fl.logInFile(`Запуск таймера команды ${this.number} ${this.name}`);
             this.isCounting = true;
             this.timerId = setInterval(() => this.minusTickTime(1000), 1000);
         } else {
-            console.log(`Таймер команды ${this.number} ${this.name} уже запущен!`);
             this.fl.logInFile(`Таймер команды ${this.number} ${this.name} уже запущен!`);
         }
     }
 
     stopTimer(){
         if(this.isCounting){
-            console.log(`Остановка таймера команды ${this.number} ${this.name}`);
             this.fl.logInFile(`Остановка таймера команды ${this.number} ${this.name}`);
             this.isCounting = false;
             clearInterval(this.timerId);
         } else {
-            console.log(`Таймер команды ${this.number} ${this.name} не запущен!`);
             this.fl.logInFile(`Таймер команды ${this.number} ${this.name} не запущен!`);
         }
     }
 
     addTime(value) {
-        console.log(`Команде ${this.number} ${this.name} добавлено ${value}`);
         this.fl.logInFile(`Команде ${this.number} ${this.name} добавлено ${value}`);
         if (!this.isOpen) {
             this.time += value
@@ -67,7 +62,6 @@ export default class Team {
     }
 
     minusTime(value) {
-        console.log(`У команды ${this.number} "${this.name}" вычтено ${this.formatTime(value)} (${value})`)
         this.fl.logInFile(`У команды ${this.number} "${this.name}" вычтено ${this.formatTime(value)}  (${value})`);
         this.time -= value;
         if (this.time <= 0 && this.isCounting) {
@@ -87,19 +81,16 @@ export default class Team {
 
     openCredit(value){
         if (!this.isOpen) {
-            console.log(`Открыт кредит на ${value} для команды ${this.number} ${this.name} `)
             this.fl.logInFile(`Открыт кредит на ${value} для команды ${this.number} ${this.name} `);
             this.addCredit(value);
             this.isOpen = true;
         } else {
-            console.log(`Кредит команды ${this.number} ${this.name}  уже открыт`);
             this.fl.logInFile(`Кредит команды ${this.number} ${this.name}  уже открыт`);
         }
     }
 
     closeCredit(){
         if(this.isOpen) {
-            console.log(`Кредит команды ${this.number} "${this.name}" закрыт!`)
             this.fl.logInFile(`Кредит команды ${this.number} "${this.name}" закрыт!`);
             this.isOpen = false;
             if (this.credit < 0) {
@@ -107,26 +98,22 @@ export default class Team {
             }
             this.credit = 0;
         } else {
-            console.log(`Кредит команды ${this.number} "${this.name}" не открыт!`)
             this.fl.logInFile(`Кредит команды ${this.number} "${this.name}" не открыт!`);
         }
     }
 
     addCredit(value){
-        console.log(`Кредит команды ${this.number} "${this.name}" увеличен на ${value}`);
         this.fl.logInFile(`Кредит команды ${this.number} "${this.name}" увеличен на ${value}`);
         this.credit += value;
         this.addCreditTime(value);
     }
 
     addCreditTime(value) {
-        console.log(`Команде ${this.number} "${this.name}" добавдено кредитное время ${value}`);
         this.fl.logInFile(`Команде ${this.number} "${this.name}" добавдено кредитное время ${value}`);
         this.time += value;
     }
 
     minusCredit(value) {
-        console.log(`Кредит команды ${this.number} "${this.name}" уменьшен на ${this.credit < value ? this.credit : value}`)
         this.fl.logInFile(`Кредит команды ${this.number} "${this.name}" уменьшен на ${this.credit < value ? this.credit : value}`);
         this.credit -= value;
         if (this.credit <= 0) {
@@ -136,7 +123,6 @@ export default class Team {
 
     startLevelCooldown() {
         if(!this.isLevelCooldown) {
-            console.log(`Начат таймер зоны команды ${this.number} "${this.name}"!`);
             this.fl.logInFile(`Начат таймер зоны команды ${this.number} "${this.name}"!`);
             this.isLevelCooldown = true;
             this.timeLevelCooldown  = this.timeForLevelCooldown;
@@ -146,7 +132,6 @@ export default class Team {
             }, 1000);
 
         } else {
-            console.log(`Таймер повышения зоны команды ${this.number} "${this.name}" уже запущен!`);
             this.fl.logInFile(`Таймер повышения зоны команды ${this.number} "${this.name}" уже запущен!`);
         }
     }
@@ -160,12 +145,10 @@ export default class Team {
 
     stopLevelCooldown() {
         if(this.isLevelCooldown) {
-            console.log(`Закончен таймер повышения зоны команды ${this.number} "${this.name}"!`);
             this.fl.logInFile(`Закончен таймер повышения зоны команды ${this.number} "${this.name}"!`);
             clearInterval(this.levelTimer);
             this.isLevelCooldown = false;
         } else {
-            console.log(`Таймер повышения зоны команды ${this.number} "${this.name}" уже остановлен!`);
             this.fl.logInFile(`Таймер повышения зоны команды ${this.number} "${this.name}" уже остановлен!`);
         }
     }
@@ -177,7 +160,6 @@ export default class Team {
                     if (this.time >= this.levelUpPrice) {
                         this.level --;
                         this.minusTime(this.levelUpPrice);
-                        console.log(`Повышение зоны команды ${this.number} "${this.name}" до ${this.level}`);
                         this.fl.logInFile(`Повышение зоны команды ${this.number} "${this.name}" до ${this.level}`);
                         this.startLevelCooldown();
                         return {
@@ -185,7 +167,6 @@ export default class Team {
                             message : `Вы успешно пересекли временную зону ${this.level}!`
                         };
                     } else {
-                        console.log(`Отказ в повышении зоны команде ${this.number} "${this.name}", так как недостаточно времени!`);
                         this.fl.logInFile(`Отказ в повышении зоны команде ${this.number} "${this.name}", так как недостаточно времени!`);
                         return {
                             isLevelUp : false,
@@ -194,7 +175,6 @@ export default class Team {
                     }
                     
                 } else {
-                    console.log(`Команда ${this.number} "${this.name}" достигла максимальной зоны!`)
                     this.fl.logInFile(`Команда ${this.number} "${this.name}" достигла максимальной зоны!`);
                     return {
                         isLevelUp : false,
@@ -202,7 +182,6 @@ export default class Team {
                     };
                 }
             } else {
-                console.log(`Отказ в повышении зоны команде ${this.number} "${this.name}", так как открыт кредит!`);
                 this.fl.logInFile(`Отказ в повышении зоны команде ${this.number} "${this.name}", так как открыт кредит!`);
                 return {
                     isLevelUp : false,
@@ -210,7 +189,6 @@ export default class Team {
                 };
             }
         } else {
-            console.log(`Отказ в повышении зоны команде ${this.number} "${this.name}", так как идет таймер зоны!`);
             this.fl.logInFile(`Отказ в повышении зоны команде ${this.number} "${this.name}", так как идет таймер зоны!`);
             return {
                 isLevelUp : false,
@@ -230,14 +208,12 @@ export default class Team {
                         this.level --;
                         this.minusTime(doubleLevelUpPrice);
                         this.startLevelCooldown();
-                        console.log(`Двойное повышение зоны команды ${this.number} "${this.name}" до ${this.level}`);
                         this.fl.logInFile(`Двойное повышение зоны команды ${this.number} "${this.name}" до ${this.level}`);
                         return {
                             isLevelUp : true,
                             message : `Вы успешно пересекли временную зону ${this.level}!`
                         };
                     } else {
-                        console.log(`Отказ в повышении зоны команде ${this.number} "${this.name}", так как недостаточно времени!`);
                         this.fl.logInFile(`Отказ в повышении зоны команде ${this.number} "${this.name}", так как недостаточно времени!`);
                         return {
                             isLevelUp : false,
@@ -246,7 +222,6 @@ export default class Team {
                     }
                     
                 } else {
-                    console.log(`Команда ${this.number} "${this.name}" достигла максимальной зоны для двойного перехода!`);
                     this.fl.logInFile(`Команда ${this.number} "${this.name}" достигла максимальной зоны для двойного перехода!`);
                     return {
                         isLevelUp : false,
@@ -254,7 +229,6 @@ export default class Team {
                     };
                 }
             } else {
-                console.log(`Отказ в двойном повышении зоны команде ${this.number} "${this.name}", так как открыт кредит!`);
                 this.fl.logInFile(`Отказ в двойном повышении зоны команде ${this.number} "${this.name}", так как открыт кредит!`);
                 return {
                     isLevelUp : false,
@@ -262,7 +236,6 @@ export default class Team {
                 };
             }
         } else {
-            console.log(`Отказ в двойном повышении зоны команде ${this.number} "${this.name}", так как идет таймер зоны!`);
             this.fl.logInFile(`Отказ в двойном повышении зоны команде ${this.number} "${this.name}", так как идет таймер зоны!`);
             return {
                 isLevelUp : false,
@@ -275,10 +248,8 @@ export default class Team {
     levelDown(){
         if (this.level < 25) {
             this.level ++;
-            console.log(`Зона команды ${this.number} ${this.name} уменьшена до ${this.level}`);
             this.fl.logInFile(`Зоны команды ${this.number} ${this.name} уменьшена до ${this.level}`);
         } else {
-            console.log(`Команда ${this.number} ${this.name} достигла минимальной зоны!`);
             this.fl.logInFile(`Команда ${this.number} ${this.name} достигла минимальной зоны!`);
         }
     }
