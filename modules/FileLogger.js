@@ -37,11 +37,10 @@ export default class FileLogger {
         let localDate = new Date(sysDate.getTime()+currentTime);
 
         let logText =
-                    '#'.padEnd(30) + '\n'  
+                    ('#').padEnd(19,'#') + '\n'  
                     + 'SystemTime['+ this.formatDateTime(sysDate) +']\n'
                     + 'LocalTime[' + this.formatDateTime(localDate) + ']\n' 
-                    + text + '\n'
-                    + '#'.padEnd(30) + '\n';  
+                    + text + '\n';
         console.log(logText);
         fs.appendFileSync(this.path, logText);
     }

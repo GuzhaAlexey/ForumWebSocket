@@ -41,10 +41,11 @@ fl.logInFile('ФОРМИРОВАНИЕ КОМАНД');
 for(let i=0; i<=10;i++){    
     teams[i] = new Team(i,`Команда ${i}`, startTime, startLevel, fl)
 }
-
+let logText = ""
 teams.forEach(function(team){
-    fl.logInFile(`${team.number} "${team.name}" ${team.time} ${team.formatTime(team.time)} ${team.level}`);
-} )
+    logText += `${team.number} "${team.name}" ${team.time} ${team.formatTime(team.time)} ${team.level}\n`;
+})
+ fl.logInFile(logText)
  
 const wsServer = new WebSocketServer({port: 9000});
  
