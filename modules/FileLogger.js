@@ -36,9 +36,9 @@ export default class FileLogger {
         var currentTime = (600 + sysDate.getTimezoneOffset())*60*1000; //перевод на время UTC +10
         let localDate = new Date(sysDate.getTime()+currentTime);
 
-        let logText = 
-                    'LocalTime[' + this.formatDateTime(localDate) + ']' + ' SystemTime['+ this.formatDateTime(sysDate) +']\n' 
-                    + text + '\n\n';
+        let timeText = '\nLocalTime[' + this.formatDateTime(localDate) + ']' + ' SystemTime['+ this.formatDateTime(sysDate) +']\n'
+        let logText = text + '\n';
+        console.log(timeText, "color: yellow");
         console.log(logText);
         fs.appendFileSync(this.path, logText);
     }
