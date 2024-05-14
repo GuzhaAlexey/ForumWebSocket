@@ -36,9 +36,8 @@ export default class FileLogger {
         var currentTime = (600 + sysDate.getTimezoneOffset())*60*1000; //перевод на время UTC +10
         let localDate = new Date(sysDate.getTime()+currentTime);
 
-        let logText =
-                    ('#').padEnd(19,'#') + '\n'  
-                    + 'SystemTime['+ this.formatDateTime(sysDate) +']\n'
+        let logText = 
+                    'SystemTime['+ this.formatDateTime(sysDate) +']\n'
                     + 'LocalTime[' + this.formatDateTime(localDate) + ']\n' 
                     + text + '\n';
         console.log(logText);
