@@ -111,6 +111,8 @@ export default class Team {
     addCreditTime(value) {
         this.fl.logInFile(`Команде ${this.number} "${this.name}" добавдено кредитное время ${value}`);
         this.time += value;
+
+        
     }
 
     minusCredit(value) {

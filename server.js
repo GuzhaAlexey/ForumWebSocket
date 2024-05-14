@@ -190,7 +190,7 @@ function onConnect(wsClient) {
                     break;
                 case 'SET_NAME':                   
                     teams[jsonMessage.data.teamNumber].name = jsonMessage.data.newName;
-                    let group = clients[jsonMessage.data.type];
+                    let group = clients[`team_${jsonMessage.data.teamNumber}`];
                     let nameJson = {
                         action: "SET_NAME",
                         data: {
