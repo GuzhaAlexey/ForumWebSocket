@@ -92,9 +92,8 @@ function onConnect(wsClient) {
                 case 'I_AM':
                         function setInClinets(type, UID, wsClient, name) {
                             delete clients["lobby"][UID]
-                            fl.logInFile(`ПОДКЛЮЧИЛСЯ ${type == "ADMIN" ? "админ" : "игрок"} ${jsonMessage.data.name}`);
+                            fl.logInFile(`ПОДКЛЮЧИЛСЯ ${type == "ADMIN" ? "админ" : "игрок"} ${typeClient} ${jsonMessage.data.name}`);
                             typeClient = type;
-                            console.log("typeClient -> " + typeClient);
                             for(key in clients[type]){
                                 console.log(key)
                                 console.log(clients[type][key])
@@ -159,7 +158,8 @@ function onConnect(wsClient) {
                                 time:teams[teamNumber].time,
                                 credit:teams[teamNumber].credit,
                                 level:teams[teamNumber].level,
-                                levelTimer:teams[teamNumber].timeLevelCooldown
+                                levelTimer:teams[teamNumber].timeLevelCooldown,
+                                isCounting:teams[teamNumber].isCounting
                             }
                         }
                         return JSON.stringify(json);
