@@ -94,10 +94,6 @@ function onConnect(wsClient) {
                             delete clients["lobby"][UID]
                             fl.logInFile(`ПОДКЛЮЧИЛСЯ ${type == "ADMIN" ? "админ" : "игрок"} ${typeClient} ${jsonMessage.data.name}`);
                             typeClient = type;
-                            for(key in clients[type]){
-                                console.log(key)
-                                console.log(clients[type][key])
-                            }
                             clients[type][UID] = {ws: wsClient, name: name};
                         }
                         setInClinets(jsonMessage.data.type.toLowerCase(), uniqueId, wsClient, jsonMessage.data.name)
