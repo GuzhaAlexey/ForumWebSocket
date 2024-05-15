@@ -17,6 +17,21 @@ export default class Team {
         this.fl = fileLogger;
     }
 
+    setCreditPaid(value){
+        this.fl.logInFile(`Установлена новая кредитная ставка ${this.formatTime(value)} (${value})`)
+        this.creditPaid = value
+    }
+
+    setTimeForLevelCooldown(value){
+        this.fl.logInFile(`Установленый новый таймер зоны ${this.formatTime(value)} (${value})`)
+        this.timeForLevelCooldown = value
+    }
+
+    setLevelUpPrice(value){
+        this.fl.logInFile(`Установлена новая цена перехода зоны ${this.formatTime(value)} (${value})`)
+        this.levelUpPrice = value
+    }
+    
     setCredit(value){
         if(this.isOpen){
             this.addCredit(this.creditPaid);

@@ -32,6 +32,16 @@ function formatDate(date) {
     return dd + '_' + mm + '_' + yy + '_' + HH + '_' + MM + '_' + SS + '_' + MI;
   }
 
+  function formatTime(time){
+    let hours = Math.floor((time % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+    let minutes = Math.floor((time % (60 * 60 * 1000)) / (60 * 1000));
+    let secodns = Math.floor((time % (60 * 1000)) / 1000);
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    secodns = secodns < 10 ? '0' + secodns : secodns;
+    return hours + ':' + minutes + ':' + secodns;
+}
+
 const teams = []
 const log_file_path = `./logs/log_${formatDate(new Date())}.txt`;
 const fl = new FileLogger(log_file_path);
@@ -116,6 +126,96 @@ function onConnect(wsClient) {
                         }
                         wsClient.send(JSON.stringify(showJson));
                     break;
+                case 'SET_TIME':
+                    teams[jsonMessage.teamNumber].time = jsonMessage.value;
+                    var log =  `Принудительное выставление времени команде ${jsonMessage.teamNumber} "${teams[jsonMessage.teamNumber].name}" ${formatTime(jsonMessage.value)}`
+                    fl.logInFile(log);
+                    for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                        clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
+                            action: "SET_TIME",
+                            data: {
+                                time: teams[jsonMessage.teamNumber].time,
+                                message: log
+                            }
+                        }))
+                    }
+                    break;
+                case 'SET_LEVEL':
+                    teams[jsonMessage.teamNumber].level = jsonMessage.value;
+                    var log =  `Принудительное выставление зоны команде ${jsonMessage.teamNumber} "${teams[jsonMessage.teamNumber].name}" ${jsonMessage.value}`
+                    fl.logInFile(log);
+                    for(key in clients[`team_${jsonMessage.teamNumber}`]){
+                        clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
+                            action: "SET_LEVEL",
+                            data: {
+                                time: teams[jsonMessage.teamNumber].level,
+                                message: log
+                            }
+                        }))
+                    }
+                    break;
+
+                case 'SET_CREDIT_PAID':
+                    teams.forEach((team) => {
+                        team.setCreditPaid(jsonMessage.value)
+                    })
+                    var groups = []
+                    for(key in clients){
+                        groups.push(clients[key])
+                    }
+                    groups.forEach((group)=>{
+                        for(key in group){
+                            group[key].ws.send(JSON.stringify({
+                                action: "SET_CREDIT_PAID",
+                                data: {
+                                    value: jsonMessage.value,
+                                    message: `Новая кредитная ставка ${formatTime(jsonMessage.value)} (${jsonMessage.value})`
+                                }
+                            }))
+                        }
+                    })
+
+                    break;
+                case 'SET_LEVEL_TIMER':
+                    teams.forEach((team)=>{
+                        team.setTimeForLevelCooldown(jsonMessage.value)
+                    })
+                    var groups = []
+                    for(key in clients){
+                        groups.push(clients[key])
+                    }
+                    groups.forEach((group)=>{
+                        for(key in group){
+                            group[key].ws.send(JSON.stringify({
+                                action: "SET_LEVEL_TIMER",
+                                data: {
+                                    value: jsonMessage.value,
+                                    message: `Новый таймер зон ${formatTime(jsonMessage.value)} (${jsonMessage.value})`
+                                }
+                            }))
+                        }
+                    })
+                    break;
+                case 'SET_LEVEL_UP_PRICE':
+                    teams.forEach((team)=>{
+                        team.setLevelUpPrice(jsonMessage.value)
+                    })
+                    var groups = []
+                    for(key in clients){
+                        groups.push(clients[key])
+                    }
+                    groups.forEach((group)=>{
+                        for(key in group){
+                            group[key].ws.send(JSON.stringify({
+                                action: "SET_LEVEL_UP_PRICE",
+                                data: {
+                                    value: jsonMessage.value,
+                                    message: `Новая цена перехода зоны ${formatTime(jsonMessage.value)} (${jsonMessage.value})`
+                                }
+                            }))
+                        }
+                    })
+                    break;    
                 case 'ECHO':
                     let echoJson = {
                         action: "ECHO",
