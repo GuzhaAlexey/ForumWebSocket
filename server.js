@@ -255,7 +255,10 @@ function onConnect(wsClient) {
                                 credit:teams[teamNumber].credit,
                                 level:teams[teamNumber].level,
                                 levelTimer:teams[teamNumber].timeLevelCooldown,
-                                isCounting:teams[teamNumber].isCounting
+                                isCounting:teams[teamNumber].isCounting,
+                                levelUpPrice: teams[teamNumber].levelUpPrice,
+                                timeLevelCooldown: teams[teamNumber].timeForLevelCooldown,
+                                creditPaid: teams[teamNumber].creditPaid
                             }
                         }
                         return JSON.stringify(json);
