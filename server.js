@@ -347,6 +347,7 @@ function onConnect(wsClient) {
                                     action: "TRUE_LEVEL_UP",
                                     data: {
                                         message: result.message,
+                                        time: teams[jsonMessage.teamNumber].time,
                                         level: teams[jsonMessage.teamNumber].level,
                                         levelTimer: teams[jsonMessage.teamNumber].timeLevelCooldown,
                                     }
@@ -389,6 +390,7 @@ function onConnect(wsClient) {
                                     action: "TRUE_DOUBLE_LEVEL_UP",
                                     data: {
                                         message: result.message,
+                                        time: teams[jsonMessage.teamNumber].time,
                                         level: teams[jsonMessage.teamNumber].level,
                                         levelTimer: teams[jsonMessage.teamNumber].timeLevelCooldown,
                                     }
