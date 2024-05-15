@@ -134,7 +134,7 @@ function onConnect(wsClient) {
                         clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                             action: "SET_TIME",
                             data: {
-                                time: teams[jsonMessage.teamNumber].time,
+                                newValue: teams[jsonMessage.teamNumber].time,
                                 message: log
                             }
                         }))
@@ -148,7 +148,7 @@ function onConnect(wsClient) {
                         clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                             action: "SET_LEVEL",
                             data: {
-                                time: teams[jsonMessage.teamNumber].level,
+                                newValue: teams[jsonMessage.teamNumber].level,
                                 message: log
                             }
                         }))
@@ -168,7 +168,7 @@ function onConnect(wsClient) {
                             group[key].ws.send(JSON.stringify({
                                 action: "SET_CREDIT_PAID",
                                 data: {
-                                    value: jsonMessage.value,
+                                    newValue: jsonMessage.value,
                                     message: `Новая кредитная ставка ${formatTime(jsonMessage.value)} (${jsonMessage.value})`
                                 }
                             }))
@@ -189,7 +189,7 @@ function onConnect(wsClient) {
                             group[key].ws.send(JSON.stringify({
                                 action: "SET_LEVEL_TIMER",
                                 data: {
-                                    value: jsonMessage.value,
+                                    newValue: jsonMessage.value,
                                     message: `Новый таймер зон ${formatTime(jsonMessage.value)} (${jsonMessage.value})`
                                 }
                             }))
@@ -209,7 +209,7 @@ function onConnect(wsClient) {
                             group[key].ws.send(JSON.stringify({
                                 action: "SET_LEVEL_UP_PRICE",
                                 data: {
-                                    value: jsonMessage.value,
+                                    newValue: jsonMessage.value,
                                     message: `Новая цена перехода зоны ${formatTime(jsonMessage.value)} (${jsonMessage.value})`
                                 }
                             }))
@@ -237,7 +237,7 @@ function onConnect(wsClient) {
                         clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                             action: "SET_NAME",
                             data: {
-                                name: jsonMessage.newName,
+                                newValue: jsonMessage.newName,
                                 message: `Новое имя команды "${teams[jsonMessage.teamNumber].name}"`
                             }
                         }))
