@@ -46,7 +46,7 @@ export default class Team {
     }
 
     addTime(value) {
-        this.fl.logInFile(`Команде ${this.number} ${this.name} добавлено ${value}`);
+        this.fl.logInFile(`Команде ${this.number} ${this.name} добавлено ${this.formatTime(value)} (${value})`);
         if (!this.isOpen) {
             this.time += value
         } else {
@@ -81,7 +81,7 @@ export default class Team {
 
     openCredit(value){
         if (!this.isOpen) {
-            this.fl.logInFile(`Открыт кредит на ${value} для команды ${this.number} ${this.name} `);
+            this.fl.logInFile(`Открыт кредит на ${this.formatTime(value)} (${value}) для команды ${this.number} ${this.name} `);
             this.addCredit(value);
             this.isOpen = true;
         } else {
@@ -103,20 +103,20 @@ export default class Team {
     }
 
     addCredit(value){
-        this.fl.logInFile(`Кредит команды ${this.number} "${this.name}" увеличен на ${value}`);
+        this.fl.logInFile(`Кредит команды ${this.number} "${this.name}" увеличен на ${this.formatTime(value)} (${value}`);
         this.credit += value;
         this.addCreditTime(value);
     }
 
     addCreditTime(value) {
-        this.fl.logInFile(`Команде ${this.number} "${this.name}" добавдено кредитное время ${value}`);
+        this.fl.logInFile(`Команде ${this.number} "${this.name}" добавдено кредитное время ${this.formatTime(value)} (${value}`);
         this.time += value;
 
         
     }
 
     minusCredit(value) {
-        this.fl.logInFile(`Кредит команды ${this.number} "${this.name}" уменьшен на ${this.credit < value ? this.credit : value}`);
+        this.fl.logInFile(`Кредит команды ${this.number} "${this.name}" уменьшен на ${this.credit < value ? this.formatTime(this.credit) : this.formatTime(value)}`);
         this.credit -= value;
         if (this.credit <= 0) {
             this.closeCredit()
