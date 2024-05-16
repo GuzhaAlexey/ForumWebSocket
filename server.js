@@ -33,13 +33,15 @@ function formatDate(date) {
   }
 
   function formatTime(time){
+    let days = Math.floor((time % (30 * 24 * 60 * 60 * 1000))/ (24 * 60 * 60 * 1000))
     let hours = Math.floor((time % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
     let minutes = Math.floor((time % (60 * 60 * 1000)) / (60 * 1000));
     let secodns = Math.floor((time % (60 * 1000)) / 1000);
+    days = days < 10 ? '0' + days : days;
     hours = hours < 10 ? '0' + hours : hours;
     minutes = minutes < 10 ? '0' + minutes : minutes;
     secodns = secodns < 10 ? '0' + secodns : secodns;
-    return hours + ':' + minutes + ':' + secodns;
+    return days + ':' + hours + ':' + minutes + ':' + secodns;
 }
 
 const teams = []
