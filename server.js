@@ -313,7 +313,6 @@ function onConnect(wsClient) {
                     break;
                 case 'ADD_TIME':
                         teams[jsonMessage.teamNumber].addTime(jsonMessage.value);
-
                         for(key in clients[`team_${jsonMessage.teamNumber}`]){
                             clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                                 action: "ADD_TIME",
@@ -321,14 +320,13 @@ function onConnect(wsClient) {
                                     value: jsonMessage.value,
                                     time: teams[jsonMessage.teamNumber].time,
                                     credit: teams[jsonMessage.teamNumber].credit,
-                                    message: `Вам начислено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}`,
+                                    message: `Вам начислено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}` + jsonMessage.reason ,
                                 }
                             }))
                         }
                     break;
                 case 'MINUS_TIME':
                         teams[jsonMessage.teamNumber].minusTime(jsonMessage.value);
-
                         for(key in clients[`team_${jsonMessage.teamNumber}`]){
                             clients[`team_${jsonMessage.teamNumber}`][key].ws.send(JSON.stringify({
                                 action: "MINUS_TIME",
@@ -336,7 +334,7 @@ function onConnect(wsClient) {
                                     value: jsonMessage.value,
                                     time: teams[jsonMessage.teamNumber].time,
                                     credit: teams[jsonMessage.teamNumber].credit,
-                                    message: `У вас вычтено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}`,
+                                    message: `У вас вычтено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}` + jsonMessage.reason ,
                                 }
                             }))
                         }
