@@ -266,7 +266,7 @@ function onConnect(wsClient) {
                     
                     switch(jsonMessage.data.type){
                         case 'ADMIN':
-                            wsClient.send(0);
+                            wsClient.send(teamData(0));
                             break;
                         case 'TEAM_0':
                             wsClient.send(teamData(0));
