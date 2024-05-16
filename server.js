@@ -320,7 +320,7 @@ function onConnect(wsClient) {
                                     value: jsonMessage.value,
                                     time: teams[jsonMessage.teamNumber].time,
                                     credit: teams[jsonMessage.teamNumber].credit,
-                                    message: `Вам начислено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}` + jsonMessage.reason ,
+                                    message: `Вам начислено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}` + jsonMessage.reason ?? "" ,
                                 }
                             }))
                         }
@@ -334,7 +334,7 @@ function onConnect(wsClient) {
                                     value: jsonMessage.value,
                                     time: teams[jsonMessage.teamNumber].time,
                                     credit: teams[jsonMessage.teamNumber].credit,
-                                    message: `У вас вычтено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}` + jsonMessage.reason ,
+                                    message: `У вас вычтено время ${teams[jsonMessage.teamNumber].formatTime(jsonMessage.value)}` + jsonMessage.reason ?? "",
                                 }
                             }))
                         }
